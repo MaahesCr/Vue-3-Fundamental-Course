@@ -5,7 +5,9 @@
             <div> <strong>Описание: </strong>{{post.body}}</div>
         </div>
         <div class="post__btns">
-            <my-btn>Удалить</my-btn>
+            <my-btn
+            @click="$emit('remove', post)"
+            >Удалить</my-btn>
         </div>
     </div>
 </template>

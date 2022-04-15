@@ -10,6 +10,7 @@
     />
     <post-list 
     v-bind:posts="posts" 
+    @remove="removePost"
     />
 
 </div>
@@ -49,6 +50,9 @@ import PostList from '@/components/PostList.vue'
                 console.log(post)
                 console.log(second)
                 this.posts.push(post) 
+            },
+            removePost(post) {
+                this.posts = this.posts.filter(p => p.id !== post.id)
             }
         }
     }
