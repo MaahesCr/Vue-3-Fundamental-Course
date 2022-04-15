@@ -2,12 +2,19 @@
 <div class="app">
     <button v-on:click="addLike">Like</button>
     <button @click="addDislike">Dislike</button>
-    
         <h3> Количество лайков {{likes}} </h3>
         <h3> Количество  дизлайков {{dislikes}} </h3>
-    <post-form 
-        @create=createPost    
-    />
+        <h1>Страница с постами</h1>
+        <my-btn
+            @click="showDialog"
+            style="margin: 15px 0"
+        >Создать пост</my-btn>
+        <my-dialog v-model:show="dialogVisable"> 
+            <post-form 
+                @create=createPost    
+            />        
+        </my-dialog>
+
     <post-list 
     v-bind:posts="posts" 
     @remove="removePost"
@@ -37,6 +44,7 @@ import PostList from '@/components/PostList.vue'
                     {id: 2, title: 'JS 2', body: 'Описание 2'},
                     {id: 3, title: 'JS 3', body: 'Описание 3'},
                 ],
+                dialogVisable: false
             }
         }, 
         methods: {
@@ -50,9 +58,13 @@ import PostList from '@/components/PostList.vue'
                 console.log(post)
                 console.log(second)
                 this.posts.push(post) 
+                this.dialogVisable = false;
             },
             removePost(post) {
                 this.posts = this.posts.filter(p => p.id !== post.id)
+            },
+            showDialog(){
+                this.dialogVisable=true
             }
         }
     }
