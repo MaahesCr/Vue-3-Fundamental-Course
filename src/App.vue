@@ -4,6 +4,7 @@
     <button @click="addDislike">Dislike</button>
         <h3> Количество лайков {{likes}} </h3>
         <h3> Количество  дизлайков {{dislikes}} </h3>
+
         <h1>Страница с постами</h1>
         <my-btn
             @click="showDialog"
@@ -16,9 +17,11 @@
         </my-dialog>
 
     <post-list 
-    v-bind:posts="posts" 
-    @remove="removePost"
+        v-bind:posts="posts" 
+        @remove="removePost"
+        v-if="isPostsLoading"
     />
+    <div v-else>Идет загрузка...</div>
 
 </div>
 
@@ -29,6 +32,7 @@
 <script>
 import PostForm from '@/components/PostForm.vue'
 import PostList from '@/components/PostList.vue'
+import axios from 'axios'
 
     export default {
         components: {
@@ -39,12 +43,9 @@ import PostList from '@/components/PostList.vue'
             return {
                 likes: 0, 
                 dislikes: 0,
-                posts: [
-                    {id: 1, title: 'JS', body: 'Описание'},
-                    {id: 2, title: 'JS 2', body: 'Описание 2'},
-                    {id: 3, title: 'JS 3', body: 'Описание 3'},
-                ],
-                dialogVisable: false
+                posts: [],
+                dialogVisable: false,
+                isPostsLoading: false, 
             }
         }, 
         methods: {
@@ -65,7 +66,25 @@ import PostList from '@/components/PostList.vue'
             },
             showDialog(){
                 this.dialogVisable=true
+            }, 
+            async fetchPosts() {
+                try {
+                    this.isPostsLoading = true
+                    setTimeout( async () => {
+                        const response = await axios.get('https://jsonplaceholder.typicode.com/posts?_limit=10')
+                        this.posts = response.data
+                        this.isPostsLoading = true
+                    }, 1000)
+                    console.log(response)
+                } catch (e) {
+                    //alert('Ошибка: ', e)
+                }  finally {
+                    this.isPostsLoading = false
+                }
             }
+        },
+        mounted() {
+            this.fetchPosts();
         }
     }
 </script>
