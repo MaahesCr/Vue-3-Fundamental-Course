@@ -1,5 +1,3 @@
-# flagstudio
-
 ## Project setup
 ```
 npm install
