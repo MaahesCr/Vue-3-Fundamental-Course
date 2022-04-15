@@ -6,10 +6,19 @@
         <h3> Количество  дизлайков {{dislikes}} </h3>
 
         <h1>Страница с постами</h1>
-        <my-btn
-            @click="showDialog"
-            style="margin: 15px 0"
-        >Создать пост</my-btn>
+        <my-input
+            v-model="searchQuery"
+            placeholder="Поиск по заголовку"
+        />
+        <div class="app__btns">
+            <my-btn
+                @click="showDialog"
+            >Создать пост</my-btn>
+            <my-select 
+            v-model="selectedSort"
+            :options="sortOptions"
+            /> 
+        </div>
         <my-dialog v-model:show="dialogVisable"> 
             <post-form 
                 @create=createPost    
@@ -17,7 +26,7 @@
         </my-dialog>
 
     <post-list 
-        v-bind:posts="posts" 
+        v-bind:posts="sortedEndSearchedPosts" 
         @remove="removePost"
         v-if="isPostsLoading"
     />
@@ -46,6 +55,12 @@ import axios from 'axios'
                 posts: [],
                 dialogVisable: false,
                 isPostsLoading: false, 
+                selectedSort: '',
+                searchQuery: '',
+                sortOptions: [
+                    {value: 'title', name: 'По названию', },
+                    {value: 'body', name: 'По описанию', }
+                ]
             }
         }, 
         methods: {
@@ -81,10 +96,31 @@ import axios from 'axios'
                 }  finally {
                     this.isPostsLoading = false
                 }
-            }
+            }, 
         },
         mounted() {
             this.fetchPosts();
+        },
+        
+        computed: {
+            sortedPosts(){
+                return [...this.posts].sort((post1, post2) => {
+                    return post1[this.selectedSort]?.localeCompare(post2[this.selectedSort])
+                })
+            },
+            sortedEndSearchedPosts(){
+                return this.sortedPosts.filter(post => post.title.toLowerCase().includes(this.searchQuery.toLowerCase()))
+            }
+        },
+
+        watch: {
+            /*
+            selectedSort(newValue) {
+                this.posts.sort((post1, post2) => {
+                    return post1[newValue]?.localeCompare(post2[newValue])
+                })
+            }
+            */
         }
     }
 </script>
@@ -98,5 +134,11 @@ import axios from 'axios'
 
     .app {
         padding: 20px;
+    }
+
+    .app__btns{
+        display: flex;
+        justify-content: space-between;
+        margin: 15px 0
     }
 </style>
