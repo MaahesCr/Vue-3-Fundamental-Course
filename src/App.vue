@@ -2,38 +2,31 @@
 <div class="app">
     <button v-on:click="addLike">Like</button>
     <button @click="addDislike">Dislike</button>
-</div>
-    <div>
+    
         <h3> Количество лайков {{likes}} </h3>
         <h3> Количество  дизлайков {{dislikes}} </h3>
-    </div>
-    <form action="" @submit.prevent> 
-        <h4>Создание поста</h4>
-        <input 
-            v-bind:value="title" 
-            @input="title = $event.target.value"
-            class="input" 
-            type="text" 
-            placeholder="Название"
-        >
-        <input 
-            v-bind:value="body" 
-            @input="body = $event.target.value"
-            class="input" 
-            type="text" 
-            placeholder="Описание"
-        >
-        <button @click="createPost">Создать пост</button>
-    </form>
-    <div class="post" v-for="post in posts">
-        <div> <strong>Название: </strong>{{post.title}}</div>
-        <div> <strong>Описание: </strong>{{post.body}}</div>
-    </div>
+    <post-form 
+        @create=createPost    
+    />
+    <post-list 
+    v-bind:posts="posts" 
+    />
+
+</div>
+
+
 
 </template>
     
 <script>
+import PostForm from '@/components/PostForm.vue'
+import PostList from '@/components/PostList.vue'
+
     export default {
+        components: {
+            PostForm, PostList
+        },
+
         data () {
             return {
                 likes: 0, 
@@ -43,8 +36,6 @@
                     {id: 2, title: 'JS 2', body: 'Описание 2'},
                     {id: 3, title: 'JS 3', body: 'Описание 3'},
                 ],
-                title: '',
-                body: '',
             }
         }, 
         methods: {
@@ -54,15 +45,10 @@
             addDislike() {
                 this.dislikes += 1
             }, 
-            createPost() {
-                const newPost = {
-                    id: Date.now(),
-                    title: this.title,
-                    body: this.body,
-                }
-                this.posts.push(newPost)
-                this.title = ''
-                this.body = ''
+            createPost(post, second) {
+                console.log(post)
+                console.log(second)
+                this.posts.push(post) 
             }
         }
     }
@@ -77,17 +63,5 @@
 
     .app {
         padding: 20px;
-    }
-
-    .post {
-    padding: 15px;
-    border: 2px solid teal;
-    margin: 10px 0  0 0 ;
-    }
-
-    .input{
-        width: 100%;
-        border: 1px solid teal;
-        padding: 10px 15px;
     }
 </style>
