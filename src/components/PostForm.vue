@@ -13,12 +13,16 @@
             type="text" 
             placeholder="Описание"
         >
-        <button @click="createPost">Создать пост</button>
+        <my-btn @click="createPost">
+        Создать пост
+        </my-btn>
     </form>
 </template>
 
 <script>
+import MyBtn from './UI/MyBtn.vue'
     export default {
+  components: { MyBtn },
         data () {
             return {
                 post: {
